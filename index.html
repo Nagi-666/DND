@@ -3,140 +3,1137 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>DND</title>
+  <title>DND — notyourdailywear</title>
   <link rel="icon" type="image/png" href="logo.jpg">
-  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;500;600;700&family=Barlow:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --accent:     #d8b26e;
+      --accent-dim: #a8853d;
+      --muted:      #70a67f;
+      --muted-dim:  #4d7a5a;
+      --dark-bg:    #0d100b;
+      --dark-2:     #111410;
+      --dark-3:     #181c14;
+      --light-bg:   #f4f2ec;
+      --light-2:    #ede9df;
+      --text-light: #f0ede6;
+      --text-dark:  #1e1e1e;
+      --border:     rgba(216,178,110,0.18);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Barlow', sans-serif;
+      background: var(--dark-bg);
+      color: var(--text-light);
+      overflow-x: hidden;
+    }
+
+    /* ── NOISE OVERLAY ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+      opacity: 0.025;
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+      font-family: 'Oswald', sans-serif;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+    }
+
+    /* ══════════════════════════════
+       NAVBAR
+    ══════════════════════════════ */
+    .navbar {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      z-index: 1000;
+      padding: 0 48px;
+      height: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(13,16,11,0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      transition: background 0.3s;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      text-decoration: none;
+    }
+
+    .logo img {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      object-fit: cover;
+    }
+
+    .logo-text {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.1;
+    }
+
+    .logo-text span:first-child {
+      font-family: 'Oswald', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--accent);
+      letter-spacing: 3px;
+    }
+
+    .logo-text span:last-child {
+      font-size: 0.65rem;
+      color: var(--muted);
+      letter-spacing: 1.5px;
+      font-weight: 300;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 36px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: rgba(240,237,230,0.65);
+      text-decoration: none;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      transition: color 0.25s;
+      position: relative;
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -3px;
+      left: 0;
+      width: 0;
+      height: 1px;
+      background: var(--accent);
+      transition: width 0.3s ease;
+    }
+
+    .nav-links a:hover { color: var(--accent); }
+    .nav-links a:hover::after { width: 100%; }
+
+    /* hamburger */
+    .menu-toggle { display: none; }
+    .menu-icon {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      padding: 4px;
+    }
+    .menu-icon span {
+      display: block;
+      width: 24px;
+      height: 2px;
+      background: var(--accent);
+      transition: all 0.3s ease;
+    }
+
+    /* ══════════════════════════════
+       HERO
+    ══════════════════════════════ */
+    .hero {
+      height: 100vh;
+      min-height: 600px;
+      display: grid;
+      place-items: center;
+      position: relative;
+      overflow: hidden;
+      background: radial-gradient(ellipse 80% 60% at 50% 60%, #1a2e1e 0%, var(--dark-bg) 70%);
+    }
+
+    .hero-bg-text {
+      position: absolute;
+      font-family: 'Oswald', sans-serif;
+      font-size: clamp(100px, 18vw, 240px);
+      font-weight: 700;
+      letter-spacing: -4px;
+      color: transparent;
+      -webkit-text-stroke: 1px rgba(216,178,110,0.07);
+      user-select: none;
+      white-space: nowrap;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+
+    .hero-content {
+      position: relative;
+      text-align: center;
+      animation: heroFade 1.2s ease both;
+    }
+
+    .hero-eyebrow {
+      font-size: 0.7rem;
+      letter-spacing: 5px;
+      color: var(--muted);
+      margin-bottom: 20px;
+      font-weight: 500;
+    }
+
+    .hero-content h1 {
+      font-size: clamp(3rem, 7vw, 7rem);
+      font-weight: 700;
+      line-height: 0.95;
+      color: var(--text-light);
+      margin-bottom: 24px;
+    }
+
+    .hero-content h1 span { color: var(--accent); }
+
+    .hero-content p {
+      font-size: 1rem;
+      color: rgba(240,237,230,0.5);
+      font-weight: 300;
+      letter-spacing: 0.5px;
+      margin-bottom: 40px;
+      max-width: 380px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 13px 36px;
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      text-decoration: none;
+      font-family: 'Oswald', sans-serif;
+      font-size: 0.85rem;
+      letter-spacing: 3px;
+      font-weight: 500;
+      text-transform: uppercase;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--accent);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.3s ease;
+      z-index: -1;
+    }
+
+    .btn:hover { color: #000; }
+    .btn:hover::before { transform: scaleX(1); }
+
+    .btn-solid {
+      background: var(--accent);
+      color: #000;
+    }
+    .btn-solid::before { background: var(--accent-dim); }
+    .btn-solid:hover { color: #000; }
+
+    .scroll-indicator {
+      position: absolute;
+      bottom: 36px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      color: rgba(240,237,230,0.3);
+      font-size: 0.65rem;
+      letter-spacing: 3px;
+      animation: scrollBounce 2s ease infinite;
+    }
+
+    .scroll-indicator::after {
+      content: '';
+      width: 1px;
+      height: 40px;
+      background: linear-gradient(to bottom, var(--accent), transparent);
+    }
+
+    /* ══════════════════════════════
+       TICKER
+    ══════════════════════════════ */
+    .ticker-wrap {
+      overflow: hidden;
+      background: var(--accent);
+      padding: 12px 0;
+      border-top: 1px solid var(--accent-dim);
+      border-bottom: 1px solid var(--accent-dim);
+    }
+
+    .ticker {
+      display: flex;
+      gap: 0;
+      animation: ticker 20s linear infinite;
+      white-space: nowrap;
+    }
+
+    .ticker span {
+      font-family: 'Oswald', sans-serif;
+      font-size: 0.8rem;
+      letter-spacing: 3px;
+      color: #000;
+      padding: 0 40px;
+      font-weight: 500;
+    }
+
+    .ticker-dot {
+      color: rgba(0,0,0,0.4) !important;
+    }
+
+    /* ══════════════════════════════
+       PRODUCTS
+    ══════════════════════════════ */
+    .products {
+      padding: 100px 48px;
+      background: var(--dark-2);
+    }
+
+    .section-header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      margin-bottom: 60px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 24px;
+    }
+
+    .section-label {
+      font-size: 0.65rem;
+      letter-spacing: 4px;
+      color: var(--muted);
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+
+    .section-header h2 {
+      font-size: clamp(2rem, 4vw, 3.5rem);
+      color: var(--text-light);
+      font-weight: 600;
+    }
+
+    .section-header h2 span { color: var(--accent); }
+
+    .section-header-right {
+      text-align: right;
+      color: rgba(240,237,230,0.4);
+      font-size: 0.85rem;
+      font-weight: 300;
+      max-width: 280px;
+    }
+
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+    }
+
+    /* Make first card span 2 columns */
+    .product-card:first-child {
+      grid-column: span 2;
+    }
+
+    .product-card {
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+      background: var(--dark-3);
+    }
+
+    .product-card:first-child .card-img-wrap {
+      aspect-ratio: 2 / 1.1;
+    }
+
+    .card-img-wrap {
+      aspect-ratio: 1 / 1.1;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .product-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.6s ease, filter 0.4s ease;
+      display: block;
+    }
+
+    .product-card:hover img {
+      transform: scale(1.07);
+      filter: brightness(0.6);
+    }
+
+    .card-overlay {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 28px;
+      background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, transparent 55%);
+    }
+
+    .card-name {
+      font-family: 'Oswald', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 600;
+      letter-spacing: 2px;
+      color: var(--text-light);
+      margin-bottom: 4px;
+    }
+
+    .product-card:first-child .card-name {
+      font-size: 1.5rem;
+    }
+
+    .card-price {
+      font-size: 0.85rem;
+      color: var(--accent);
+      font-weight: 600;
+      letter-spacing: 1px;
+    }
+
+    .card-cta {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) translateY(10px);
+      opacity: 0;
+      transition: all 0.35s ease;
+      white-space: nowrap;
+      font-size: 0.75rem;
+      padding: 10px 24px;
+    }
+
+    .product-card:hover .card-cta {
+      opacity: 1;
+      transform: translate(-50%, -50%) translateY(0);
+    }
+
+    /* ══════════════════════════════
+       ABOUT
+    ══════════════════════════════ */
+    .about {
+      padding: 100px 48px;
+      background: var(--light-bg);
+      color: var(--text-dark);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+    }
+
+    .about-left .section-label { color: var(--muted-dim); }
+
+    .about-left h2 {
+      font-size: clamp(2.2rem, 4vw, 3.8rem);
+      font-weight: 700;
+      line-height: 1;
+      margin-bottom: 30px;
+      color: var(--text-dark);
+    }
+
+    .about-left h2 span { color: var(--muted-dim); }
+
+    .about-blocks {
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+    }
+
+    .about-block {
+      border-left: 2px solid var(--muted-dim);
+      padding-left: 20px;
+    }
+
+    .about-block h4 {
+      font-family: 'Oswald', sans-serif;
+      font-size: 0.75rem;
+      letter-spacing: 3px;
+      color: var(--muted-dim);
+      margin-bottom: 6px;
+    }
+
+    .about-block p {
+      font-size: 0.95rem;
+      color: #444;
+      line-height: 1.7;
+      font-weight: 300;
+    }
+
+    /* ══════════════════════════════
+       WHY US
+    ══════════════════════════════ */
+    .why-us {
+      padding: 100px 48px;
+      background: var(--dark-bg);
+    }
+
+    .why-us .section-header { margin-bottom: 60px; }
+
+    .why-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 2px;
+    }
+
+    .why-card {
+      background: var(--dark-3);
+      padding: 40px 32px;
+      border-top: 2px solid transparent;
+      transition: border-color 0.3s, background 0.3s;
+    }
+
+    .why-card:hover {
+      border-color: var(--accent);
+      background: rgba(216,178,110,0.04);
+    }
+
+    .why-number {
+      font-family: 'Oswald', sans-serif;
+      font-size: 3rem;
+      font-weight: 700;
+      color: rgba(216,178,110,0.15);
+      line-height: 1;
+      margin-bottom: 16px;
+      transition: color 0.3s;
+    }
+
+    .why-card:hover .why-number { color: rgba(216,178,110,0.4); }
+
+    .why-card h3 {
+      font-size: 0.95rem;
+      letter-spacing: 2px;
+      color: var(--accent);
+      margin-bottom: 12px;
+    }
+
+    .why-card p {
+      font-size: 0.88rem;
+      color: rgba(240,237,230,0.5);
+      line-height: 1.7;
+      font-weight: 300;
+    }
+
+    /* ══════════════════════════════
+       TESTIMONIALS
+    ══════════════════════════════ */
+    .testimonials {
+      padding: 100px 48px;
+      background: var(--light-2);
+      color: var(--text-dark);
+    }
+
+    .testimonials .section-label { color: var(--muted-dim); }
+    .testimonials .section-header { border-color: rgba(0,0,0,0.1); }
+    .testimonials .section-header h2 { color: var(--text-dark); }
+    .testimonials .section-header h2 span { color: var(--muted-dim); }
+
+    .reviews-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    .review-card {
+      background: white;
+      padding: 36px;
+      position: relative;
+    }
+
+    .review-quote {
+      font-size: 4rem;
+      font-family: 'Oswald', sans-serif;
+      color: var(--muted-dim);
+      opacity: 0.3;
+      line-height: 0.8;
+      margin-bottom: 16px;
+    }
+
+    .review-text {
+      font-size: 1.05rem;
+      line-height: 1.75;
+      color: #333;
+      font-style: italic;
+      font-weight: 300;
+      margin-bottom: 24px;
+    }
+
+    .review-author {
+      font-family: 'Oswald', sans-serif;
+      font-size: 0.75rem;
+      letter-spacing: 3px;
+      color: var(--muted-dim);
+    }
+
+    /* ══════════════════════════════
+       CONTACT
+    ══════════════════════════════ */
+    .contact {
+      padding: 100px 48px;
+      background: var(--dark-2);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: start;
+    }
+
+    .contact-left h2 {
+      font-size: clamp(2.5rem, 5vw, 5rem);
+      line-height: 0.95;
+      margin-bottom: 30px;
+    }
+
+    .contact-left h2 span { color: var(--accent); }
+
+    .contact-left p {
+      color: rgba(240,237,230,0.45);
+      font-size: 0.95rem;
+      font-weight: 300;
+      line-height: 1.8;
+      margin-bottom: 40px;
+    }
+
+    .contact-socials {
+      display: flex;
+      gap: 16px;
+    }
+
+    .social-btn {
+      display: inline-block;
+      padding: 10px 24px;
+      border: 1px solid var(--border);
+      color: var(--text-light);
+      text-decoration: none;
+      font-size: 0.75rem;
+      letter-spacing: 2px;
+      font-family: 'Oswald', sans-serif;
+      transition: all 0.3s;
+    }
+
+    .social-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .contact-details {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .contact-row {
+      display: flex;
+      gap: 0;
+      border-bottom: 1px solid rgba(216,178,110,0.08);
+    }
+
+    .contact-row:first-child {
+      border-top: 1px solid rgba(216,178,110,0.08);
+    }
+
+    .contact-row-label {
+      font-family: 'Oswald', sans-serif;
+      font-size: 0.65rem;
+      letter-spacing: 3px;
+      color: var(--muted);
+      padding: 18px 20px;
+      min-width: 110px;
+      display: flex;
+      align-items: center;
+    }
+
+    .contact-row-value {
+      padding: 18px 20px;
+      font-size: 0.9rem;
+      color: rgba(240,237,230,0.65);
+      font-weight: 300;
+      display: flex;
+      align-items: center;
+      border-left: 1px solid rgba(216,178,110,0.08);
+    }
+
+    .contact-row-value a {
+      color: var(--accent);
+      text-decoration: none;
+      transition: opacity 0.2s;
+    }
+
+    .contact-row-value a:hover { opacity: 0.7; }
+
+    /* ══════════════════════════════
+       FOOTER
+    ══════════════════════════════ */
+    .footer {
+      background: var(--dark-bg);
+      border-top: 1px solid var(--border);
+      padding: 60px 48px 36px;
+    }
+
+    .footer-top {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr 1fr 1fr;
+      gap: 48px;
+      margin-bottom: 60px;
+      padding-bottom: 60px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .footer-brand img {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-bottom: 16px;
+    }
+
+    .footer-brand h3 {
+      font-size: 1.5rem;
+      color: var(--accent);
+      margin-bottom: 4px;
+    }
+
+    .footer-brand p {
+      font-size: 0.8rem;
+      color: var(--muted);
+      font-weight: 300;
+      letter-spacing: 1px;
+    }
+
+    .footer-col h4 {
+      font-size: 0.65rem;
+      letter-spacing: 4px;
+      color: rgba(240,237,230,0.4);
+      margin-bottom: 20px;
+    }
+
+    .footer-col a, .footer-col p {
+      display: block;
+      color: rgba(240,237,230,0.6);
+      text-decoration: none;
+      font-size: 0.88rem;
+      font-weight: 300;
+      margin-bottom: 10px;
+      transition: color 0.2s;
+    }
+
+    .footer-col a:hover { color: var(--accent); }
+
+    .footer-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .footer-bottom p {
+      font-size: 0.75rem;
+      color: rgba(240,237,230,0.25);
+      letter-spacing: 1px;
+    }
+
+    /* ══════════════════════════════
+       IMAGE POPUP
+    ══════════════════════════════ */
+    .popup-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.92);
+      z-index: 5000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(8px);
+    }
+
+    .popup-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .popup-inner {
+      position: relative;
+      max-width: 600px;
+      width: 90vw;
+      transform: scale(0.92);
+      transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .popup-overlay.active .popup-inner { transform: scale(1); }
+
+    .popup-inner img {
+      width: 100%;
+      display: block;
+      border-radius: 2px;
+    }
+
+    .popup-info {
+      background: var(--dark-3);
+      padding: 20px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid var(--border);
+    }
+
+    .popup-name {
+      font-family: 'Oswald', sans-serif;
+      font-size: 1rem;
+      letter-spacing: 2px;
+    }
+
+    .popup-price { color: var(--accent); font-weight: 600; }
+
+    .popup-close {
+      position: absolute;
+      top: -48px;
+      right: 0;
+      background: none;
+      border: 1px solid rgba(255,255,255,0.2);
+      color: white;
+      width: 36px;
+      height: 36px;
+      cursor: pointer;
+      font-size: 1.2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: border-color 0.2s, color 0.2s;
+    }
+
+    .popup-close:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* ══════════════════════════════
+       ANIMATIONS
+    ══════════════════════════════ */
+    @keyframes heroFade {
+      from { opacity: 0; transform: translateY(30px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes ticker {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-50%); }
+    }
+
+    @keyframes scrollBounce {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50%       { transform: translateX(-50%) translateY(8px); }
+    }
+
+    /* ══════════════════════════════
+       RESPONSIVE
+    ══════════════════════════════ */
+    @media (max-width: 1024px) {
+      .product-grid { grid-template-columns: repeat(2, 1fr); }
+      .product-card:first-child { grid-column: span 2; }
+      .why-grid { grid-template-columns: repeat(2, 1fr); }
+      .footer-top { grid-template-columns: 1fr 1fr; }
+    }
+
+    @media (max-width: 768px) {
+      .navbar { padding: 0 24px; }
+      .nav-links { display: none; position: fixed; inset: 0; background: rgba(13,16,11,0.98); flex-direction: column; align-items: center; justify-content: center; gap: 32px; z-index: 1001; }
+      .nav-links.open { display: flex; }
+      .nav-links a { font-size: 1.1rem; }
+      .menu-icon { display: flex; z-index: 1002; }
+      .products, .why-us, .contact, .testimonials { padding: 70px 24px; }
+      .about { grid-template-columns: 1fr; gap: 40px; padding: 70px 24px; }
+      .contact { grid-template-columns: 1fr; gap: 40px; padding: 70px 24px; }
+      .section-header { flex-direction: column; align-items: flex-start; gap: 12px; }
+      .product-grid { grid-template-columns: 1fr; }
+      .product-card:first-child { grid-column: span 1; }
+      .product-card:first-child .card-img-wrap { aspect-ratio: 1 / 1.1; }
+      .why-grid { grid-template-columns: 1fr 1fr; }
+      .reviews-grid { grid-template-columns: 1fr; }
+      .footer { padding: 48px 24px 24px; }
+      .footer-top { grid-template-columns: 1fr 1fr; gap: 32px; }
+      .footer-bottom { flex-direction: column; gap: 12px; text-align: center; }
+      .hero { padding: 0 24px; }
+    }
+
+    @media (max-width: 480px) {
+      .why-grid { grid-template-columns: 1fr; }
+      .footer-top { grid-template-columns: 1fr; }
+      .contact-socials { flex-direction: column; }
+    }
+  </style>
 </head>
 <body>
+
 <!-- NAVBAR -->
-<header class="navbar">
-  <div class="logo">
-    <img src="logo.jpg" alt="DND Logo" />
-    <h6>notyourdailywear.dnd</h6>
+<header class="navbar" id="navbar">
+  <a href="#home" class="logo">
+    <img src="logo.jpg" alt="DND Logo">
+    <div class="logo-text">
+      <span>DND</span>
+      <span>notyourdailywear.dnd</span>
+    </div>
+  </a>
+
+  <ul class="nav-links" id="navLinks">
+    <li><a href="#home" onclick="closeMenu()">Home</a></li>
+    <li><a href="#product" onclick="closeMenu()">Products</a></li>
+    <li><a href="#about" onclick="closeMenu()">About</a></li>
+    <li><a href="#choose" onclick="closeMenu()">Why Us</a></li>
+    <li><a href="#testimonials" onclick="closeMenu()">Reviews</a></li>
+    <li><a href="#contact" onclick="closeMenu()">Contact</a></li>
+  </ul>
+
+  <div class="menu-icon" id="menuIcon" onclick="toggleMenu()">
+    <span></span><span></span><span></span>
   </div>
-
-  <!-- Hamburger toggle -->
-  <input type="checkbox" id="menu-toggle" class="menu-toggle">
-  <label for="menu-toggle" class="menu-icon">&#9776;</label>
-
-  <nav class="nav-links">
-    <a href="#home">HOME</a>
-    <a href="#product">PRODUCTS</a>
-    <a href="#about">ABOUT</a>
-    <a href="#choose">WHY US</a>
-    <a href="#testimonials">REVIEWS</a>
-    <a href="#contact">CONTACT</a>
-  </nav>
 </header>
 
+<!-- HERO -->
+<section id="home" class="hero">
+  <div class="hero-bg-text">DND</div>
+  <div class="hero-content">
+    <p class="hero-eyebrow">Streetwear · Premium Quality · Quezon City</p>
+    <h1>NOT YOUR<br><span>DAILY</span><br>WEAR</h1>
+    <p>Premium streetwear crafted with passion, precision, and care. Stand out. Stay disciplined.</p>
+    <a href="#product" class="btn">Shop the Collection</a>
+  </div>
+  <div class="scroll-indicator">SCROLL</div>
+</section>
 
+<!-- TICKER -->
+<div class="ticker-wrap">
+  <div class="ticker">
+    <span>DND</span><span class="ticker-dot">✦</span>
+    <span>NOT YOUR DAILY WEAR</span><span class="ticker-dot">✦</span>
+    <span>DISCIPLINE NOT DRAMA</span><span class="ticker-dot">✦</span>
+    <span>QUEZON CITY</span><span class="ticker-dot">✦</span>
+    <span>PREMIUM STREETWEAR</span><span class="ticker-dot">✦</span>
+    <span>₱700</span><span class="ticker-dot">✦</span>
+    <span>DND</span><span class="ticker-dot">✦</span>
+    <span>NOT YOUR DAILY WEAR</span><span class="ticker-dot">✦</span>
+    <span>DISCIPLINE NOT DRAMA</span><span class="ticker-dot">✦</span>
+    <span>QUEZON CITY</span><span class="ticker-dot">✦</span>
+    <span>PREMIUM STREETWEAR</span><span class="ticker-dot">✦</span>
+    <span>₱700</span><span class="ticker-dot">✦</span>
+  </div>
+</div>
 
-  <!-- HERO / HOME -->
-  <section id="home" class="section hero">
-    <div class="hero-content">
-      <h1>Welcome to DND</h1>
-      <p>Premium products crafted with passion, precision, and care.</p>
-      <a href="#about" class="btn">Learn More</a>
+<!-- PRODUCTS -->
+<section id="product" class="products">
+  <div class="section-header">
+    <div>
+      <p class="section-label">— Our Collection</p>
+      <h2>The <span>Drop</span></h2>
     </div>
-  </section>
-  <!--PRODUCT-->
- <!-- PRODUCT SECTION -->
-<section id="product" class="section black">
-  <div class="prod-contents">
-    <h1>Our Collection</h1>
-    <p>Premium streetwear crafted with passion, precision, and care.</p>
-    <div class="product-grid">
-      <div class="product-card">
-        <img src="1.jpg" alt="DND DO NOT DISTURB">
-        <h3>DND Do Not Disturb</h3>
-        <p class="price">₱700</p>
-        
-      </div>
+    <div class="section-header-right">
+      Premium streetwear pieces, each ₱700. Click any item to zoom in.
+    </div>
+  </div>
 
-      <div class="product-card">
-        <img src="2.jpg" alt="DND BUBBLE GUM">
-        <h3>DND Bubble Gum</h3>
-        <p class="price">₱700</p>
+  <div class="product-grid">
+    <div class="product-card" onclick="openPopup('1.jpg', 'DND Do Not Disturb', '₱700')">
+      <div class="card-img-wrap">
+        <img src="1.jpg" alt="DND Do Not Disturb">
+        <div class="card-overlay">
+          <a class="btn card-cta">View Item</a>
+          <div class="card-name">DND Do Not Disturb</div>
+          <div class="card-price">₱700</div>
+        </div>
       </div>
+    </div>
 
-      <div class="product-card">
+    <div class="product-card" onclick="openPopup('2.jpg', 'DND Bubble Gum', '₱700')">
+      <div class="card-img-wrap">
+        <img src="2.jpg" alt="DND Bubble Gum">
+        <div class="card-overlay">
+          <a class="btn card-cta">View Item</a>
+          <div class="card-name">DND Bubble Gum</div>
+          <div class="card-price">₱700</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-card" onclick="openPopup('3.jpg', 'DND SEENJUSTNOW', '₱700')">
+      <div class="card-img-wrap">
         <img src="3.jpg" alt="DND SEENJUSTNOW">
-        <h3>DND SEENJUSTNOW</h3>
-        <p class="price">₱700</p>
+        <div class="card-overlay">
+          <a class="btn card-cta">View Item</a>
+          <div class="card-name">DND SEENJUSTNOW</div>
+          <div class="card-price">₱700</div>
+        </div>
       </div>
-      
-       <div class="product-card">
-        <img src="4.jpg" alt="DND Digital">
-        <h3>DND Digital</h3>
-        <p class="price">₱700</p>
-      </div>
+    </div>
 
-      <div class="product-card">
+    <div class="product-card" onclick="openPopup('4.jpg', 'DND Digital', '₱700')">
+      <div class="card-img-wrap">
+        <img src="4.jpg" alt="DND Digital">
+        <div class="card-overlay">
+          <a class="btn card-cta">View Item</a>
+          <div class="card-name">DND Digital</div>
+          <div class="card-price">₱700</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-card" onclick="openPopup('5.jpg', 'DND Classic Tee', '₱700')">
+      <div class="card-img-wrap">
         <img src="5.jpg" alt="DND Classic Tee">
-        <h3>DND Classic Tee</h3>
-        <p class="price">₱700</p>
+        <div class="card-overlay">
+          <a class="btn card-cta">View Item</a>
+          <div class="card-name">DND Classic Tee</div>
+          <div class="card-price">₱700</div>
+        </div>
       </div>
     </div>
   </div>
 </section>
 
-
-  <!-- ABOUT SECTION -->
-  <section id="about" class="section light">
-    <h2>About Us</h2>
-    <p><strong>Who We Are:</strong> A team dedicated to creating exceptional products that stand out for their quality and innovation.</p>
-    <p><strong>Our Story:</strong> Founded with a passion for excellence, DND strives to redefine customer satisfaction through innovation and trust.</p>
-    <p><strong>Our Mission:</strong> To bring premium craftsmanship to every product we deliver.</p>
-  </section>
-
-  <!-- WHY CHOOSE US -->
-  <section id="choose" class="section dark">
-    <h2>Why Choose Us?</h2>
-    <ul>
-      <li> Top-tier product quality and durability</li>
-      <li> Excellent customer service and reliability</li>
-      <li> Affordable pricing with outstanding value</li>
-      <li> Trusted by hundreds of satisfied clients</li>
-    </ul>
-  </section>
-
-  <!-- TESTIMONIALS -->
-  <section id="testimonials" class="section light">
-    <h2>Testimonials</h2>
-    <div class="review">
-      <p>“Maganda yung tela niya and mabilis yung delivery.”</p>
-      <h4>- Jayson S.</h4>
+<!-- ABOUT -->
+<section id="about" class="about">
+  <div class="about-left">
+    <p class="section-label">— Who We Are</p>
+    <h2>Built on<br><span>Discipline</span></h2>
+  </div>
+  <div class="about-blocks">
+    <div class="about-block">
+      <h4>Our Story</h4>
+      <p>Founded with a passion for excellence, DND strives to redefine customer satisfaction through innovation and trust. Every piece tells a story of discipline over drama.</p>
     </div>
-    <div class="review">
-      <p>“I recommend yung DND Classic Tee since mahilig ako sa minimalist designs. ”</p>
-      <h4>- Jamie L.</h4>
+    <div class="about-block">
+      <h4>Our Mission</h4>
+      <p>To bring premium craftsmanship to every product we deliver — streetwear that stands out for its quality and integrity, not just its aesthetics.</p>
     </div>
-  </section>
+    <div class="about-block">
+      <h4>Our Community</h4>
+      <p>A growing family of individuals who believe that how you carry yourself matters. DND is not just clothing — it's a mindset.</p>
+    </div>
+  </div>
+</section>
 
-  <!-- CONTACT SECTION -->
-  <section id="contact" class="section dark">
-    <h2>Contact Us</h2>
-    <p> <strong>Phone:</strong> 09949578820</p>
-    <p> <strong>Email:</strong> disciplinenotdrama@gmail.com </p>
-    <p> <strong>Address:</strong> Payatas A. Quezon City</p>
-    <p> <strong>Follow us:</strong>
-      <a href="https://www.facebook.com/profile.php?id=61579845057210">Facebook</a> 
-      <a href="https://www.instagram.com/notyourdailywear.dnd/">Instagram</a> 
-    </p>
-  </section>
+<!-- WHY US -->
+<section id="choose" class="why-us">
+  <div class="section-header">
+    <div>
+      <p class="section-label">— Why Choose DND</p>
+      <h2>What Sets Us <span>Apart</span></h2>
+    </div>
+  </div>
+  <div class="why-grid">
+    <div class="why-card">
+      <div class="why-number">01</div>
+      <h3>Premium Quality</h3>
+      <p>Top-tier fabric and print quality that holds up wash after wash. Built to last, designed to impress.</p>
+    </div>
+    <div class="why-card">
+      <div class="why-number">02</div>
+      <h3>Customer First</h3>
+      <p>Excellent service and reliability — from DM to doorstep, we make sure your experience is smooth.</p>
+    </div>
+    <div class="why-card">
+      <div class="why-number">03</div>
+      <h3>Real Value</h3>
+      <p>Affordable ₱700 pricing without cutting corners. You get more than what you pay for, guaranteed.</p>
+    </div>
+    <div class="why-card">
+      <div class="why-number">04</div>
+      <h3>Trusted Brand</h3>
+      <p>Trusted by hundreds of satisfied customers across Quezon City and beyond. The reviews speak for themselves.</p>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section id="testimonials" class="testimonials">
+  <div class="section-header">
+    <div>
+      <p class="section-label">— What They Say</p>
+      <h2>Customer <span>Reviews</span></h2>
+    </div>
+  </div>
+  <div class="reviews-grid">
+    <div class="review-card">
+      <div class="review-quote">"</div>
+      <p class="review-text">Maganda yung tela niya and mabilis yung delivery. Super satisfied talaga, babalik pa ko para bumili ulit.</p>
+      <div class="review-author">— Jayson S.</div>
+    </div>
+    <div class="review-card">
+      <div class="review-quote">"</div>
+      <p class="review-text">I recommend yung DND Classic Tee since mahilig ako sa minimalist designs. The quality is better than you'd expect for the price.</p>
+      <div class="review-author">— Jamie L.</div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact" class="contact">
+  <div class="contact-left">
+    <h2>Get In <span>Touch</span></h2>
+    <p>Have questions? Want to order? Slide into our DMs or reach out through any of the channels below. We're always happy to help.</p>
+    <div class="contact-socials">
+      <a href="https://www.facebook.com/profile.php?id=61579845057210" target="_blank" class="social-btn">Facebook</a>
+      <a href="https://www.instagram.com/notyourdailywear.dnd/" target="_blank" class="social-btn">Instagram</a>
+    </div>
+  </div>
+
+  <div class="contact-details">
+    <div class="contact-row">
+      <div class="contact-row-label">Phone</div>
+      <div class="contact-row-value">09949578820</div>
+    </div>
+    <div class="contact-row">
+      <div class="contact-row-label">Email</div>
+      <div class="contact-row-value"><a href="mailto:disciplinenotdrama@gmail.com">disciplinenotdrama@gmail.com</a></div>
+    </div>
+    <div class="contact-row">
+      <div class="contact-row-label">Address</div>
+      <div class="contact-row-value">Payatas A, Quezon City</div>
+    </div>
+    <div class="contact-row">
+      <div class="contact-row-label">Facebook</div>
+      <div class="contact-row-value"><a href="https://www.facebook.com/profile.php?id=61579845057210" target="_blank">notyourdailywear.dnd</a></div>
+    </div>
+    <div class="contact-row">
+      <div class="contact-row-label">Instagram</div>
+      <div class="contact-row-value"><a href="https://www.instagram.com/notyourdailywear.dnd/" target="_blank">@notyourdailywear.dnd</a></div>
+    </div>
+  </div>
+</section>
 
 <!-- FOOTER -->
 <footer class="footer">
-  <div class="footer-container">
-    <div class="footer-logo">
+  <div class="footer-top">
+    <div class="footer-brand">
       <img src="logo.jpg" alt="DND Logo">
       <h3>DND</h3>
       <p>notyourdailywear.dnd</p>
     </div>
-
-    <div class="footer-links">
-      <h4>Quick Links</h4>
+    <div class="footer-col">
+      <h4>Navigate</h4>
       <a href="#home">Home</a>
       <a href="#product">Products</a>
       <a href="#about">About</a>
@@ -144,64 +1141,74 @@
       <a href="#testimonials">Reviews</a>
       <a href="#contact">Contact</a>
     </div>
-
-    <div class="footer-socials">
-      <h4>Follow Us</h4>
+    <div class="footer-col">
+      <h4>Follow</h4>
       <a href="https://www.facebook.com/profile.php?id=61579845057210" target="_blank">Facebook</a>
       <a href="https://www.instagram.com/notyourdailywear.dnd/" target="_blank">Instagram</a>
     </div>
-
-    <div class="footer-contact">
+    <div class="footer-col">
       <h4>Contact</h4>
-      <p><strong>Phone:</strong> 09949578820 </p>
-      <p><strong>Email:</strong> disciplinenotdrama@gmail.com  </p>
-      <p><strong>Address:</strong> Payatas A, Quezon City</p>
+      <p>09949578820</p>
+      <p>disciplinenotdrama@gmail.com</p>
+      <p>Payatas A, Quezon City</p>
     </div>
   </div>
-
   <div class="footer-bottom">
-    <p>© 2025 . All Rights Reserved.</p>
+    <p>© 2025 DND — Discipline Not Drama. All Rights Reserved.</p>
+    <p>notyourdailywear.dnd</p>
   </div>
 </footer>
 
-
-  <!-- CENTER IMAGE POPUP -->
-<div id="imagePopup" class="image-popup">
-  <button class="close-popup">&times;</button>
-  <img src="" alt="Zoomed Product">
+<!-- POPUP -->
+<div class="popup-overlay" id="popup" onclick="handlePopupClick(event)">
+  <div class="popup-inner" id="popupInner">
+    <button class="popup-close" onclick="closePopup()">✕</button>
+    <img src="" alt="" id="popupImg">
+    <div class="popup-info">
+      <div class="popup-name" id="popupName"></div>
+      <div class="popup-price" id="popupPrice"></div>
+    </div>
+  </div>
 </div>
+
 <script>
-  const popup = document.createElement('div');
-  popup.classList.add('image-popup');
-  popup.innerHTML = `
-    <button class="close-popup">&times;</button>
-    <img src="" alt="Zoomed product">
-  `;
-  document.body.appendChild(popup);
+  // Popup
+  function openPopup(src, name, price) {
+    document.getElementById('popupImg').src = src;
+    document.getElementById('popupName').textContent = name;
+    document.getElementById('popupPrice').textContent = price;
+    document.getElementById('popup').classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
 
-  const popupImg = popup.querySelector('img');
-  const closePopup = popup.querySelector('.close-popup');
+  function closePopup() {
+    document.getElementById('popup').classList.remove('active');
+    document.body.style.overflow = '';
+  }
 
-  // Click image or Zoom Product button to open popup
-  document.querySelectorAll('.product-card img, .zoom-btn').forEach(el => {
-    el.addEventListener('click', e => {
-      e.preventDefault();
-      const card = el.closest('.product-card');
-      const img = card.querySelector('img');
-      popupImg.src = img.src;
-      popup.classList.add('active');
-    });
-  });
+  function handlePopupClick(e) {
+    if (e.target === document.getElementById('popup')) closePopup();
+  }
 
-  closePopup.addEventListener('click', () => {
-    popup.classList.remove('active');
-  });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closePopup(); });
 
-  popup.addEventListener('click', e => {
-    if (e.target === popup) popup.classList.remove('active');
+  // Mobile menu
+  function toggleMenu() {
+    document.getElementById('navLinks').classList.toggle('open');
+  }
+
+  function closeMenu() {
+    document.getElementById('navLinks').classList.remove('open');
+  }
+
+  // Navbar scroll effect
+  window.addEventListener('scroll', () => {
+    const nb = document.getElementById('navbar');
+    nb.style.background = window.scrollY > 50
+      ? 'rgba(13,16,11,0.97)'
+      : 'rgba(13,16,11,0.85)';
   });
 </script>
-
 
 </body>
 </html>
